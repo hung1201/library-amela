@@ -7,6 +7,8 @@ import QueryClientProvider from '../services/QueryClient';
 
 import './global.css';
 import { NextPageWithLayout } from '../components/layout/LayoutContainers';
+import { ModalProvider } from '../services/ModalProvider';
+import ModalVerifyAction from '../components/ModalVerifyAction';
 export interface IAppProps extends Omit<AppProps, 'Component'> {
   pageProps: { [key: string]: any };
   Component: NextPageWithLayout;
@@ -17,7 +19,10 @@ function MyApp({ Component, pageProps }: IAppProps) {
     <QueryClientProvider>
       <AuthProvider>
         <GlobalMessagingProvider>
-          {getLayout(<Component {...(pageProps as any)} />)}
+          <ModalProvider>
+            {getLayout(<Component {...(pageProps as any)} />)}
+            <ModalVerifyAction />
+          </ModalProvider>
         </GlobalMessagingProvider>
       </AuthProvider>
     </QueryClientProvider>

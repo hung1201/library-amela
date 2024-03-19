@@ -1,35 +1,29 @@
 'use strict';
 module.exports = {
   up: (queryInterface: any, Sequelize: any) => {
-    return queryInterface.createTable('books', {
+    return queryInterface.createTable('authors', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      pubYear: {
-        type: Sequelize.INTEGER
+      name: {
+        type: Sequelize.STRING
       },
-      authorId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'authors',
-          key: 'id'
-        },
-        onDelete: null
+      bookIds: {
+        type: Sequelize.ARRAY(Sequelize.INTEGER)
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
       updatedAt: {
-        allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface: any, Sequelize: any) => {
-    return queryInterface.dropTable('books');
+    return queryInterface.dropTable('authors');
   }
 };

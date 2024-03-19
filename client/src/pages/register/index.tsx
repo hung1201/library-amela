@@ -7,6 +7,7 @@ import AuthContainer from '../../components/AuthContainer';
 import withPageAuth from '../../middleware/withPageAuth';
 import NavService from '../../services/Nav.service';
 import { IRegisterIn } from '../../types/auth.types';
+import RoutesConfig from '../../config/routesConfig';
 
 interface IProps {}
 
@@ -124,7 +125,7 @@ function Register(props: IProps) {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  navService.redirectUser('/login');
+                  navService.redirectUser(RoutesConfig.LoginPage.path());
                 }}
                 className="underline"
               >

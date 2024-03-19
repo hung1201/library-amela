@@ -1,25 +1,19 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
 
-import PageContent from '../../components/PageContent';
-
 import FetchService from '../../services/Fetch.service';
-import { useGlobalMessaging } from '../../services/GlobalMessaging.context';
 
-import { useRouter } from 'next/router';
+import AuthContainer from '../../components/AuthContainer';
+import RoutesConfig from '../../config/routesConfig';
 import withPageAuth from '../../middleware/withPageAuth';
 import { ActionType, useAuth } from '../../services/Auth.context';
 import NavService from '../../services/Nav.service';
 import TokenService from '../../services/Token.service';
 import { ILoginIn, ILoginOutput } from '../../types/auth.types';
-import BackButton from '../../components/BackButton';
-import AuthContainer from '../../components/AuthContainer';
 
 interface IProps {}
 
 function Login(props: IProps) {
-  const [messageState, messageDispatch] = useGlobalMessaging();
   const [auth, authDispatch] = useAuth();
-  const router = useRouter();
   const navService = new NavService();
   return (
     <AuthContainer
@@ -61,7 +55,7 @@ function Login(props: IProps) {
                           name: `${res.firstName ?? ''} ${res.lastName ?? ''}`
                         }
                       });
-                      navService.redirectUser('/');
+                      navService.redirectUser(RoutesConfig.HomePage.path());
                     }
                   })
                   .catch();

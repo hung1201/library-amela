@@ -13,7 +13,6 @@ export type NextPageWithLayout = React.FC<{
 };
 export interface IConfig {
   FooterComponent?: React.FC<IPageLayoutProps>;
-
   BaseHeaderComponent?: React.FC<IPageLayoutProps & { [key: string]: any }>;
 }
 export interface IPageLayoutProps {

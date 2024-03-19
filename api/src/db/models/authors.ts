@@ -3,9 +3,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
     'authors',
     {
       name: DataTypes.STRING,
-      bookIds: DataTypes.STRING,
-      createdAt: DataTypes.STRING,
-      updatedAt: DataTypes.STRING
+      bookIds: DataTypes.ARRAY(DataTypes.INTEGER),
+      createdAt: { type: DataTypes.DATE },
+      updatedAt: { type: DataTypes.DATE }
     },
     {}
   );

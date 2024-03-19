@@ -14,7 +14,8 @@ require('dotenv').config();
 
 // Route handlers
 const authApi = require('./v1/auth');
-
+const bookApi = require('./v1/books');
+const authorApi = require('./v1/authors');
 // Create server
 const app: express.Application = express();
 
@@ -35,6 +36,8 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
 app.use(errorHandler());
 
 // API routes
+app.use('/v1/books', bookApi);
 app.use('/v1/auth', authApi);
+app.use('/v1/authors', authorApi);
 
 export { app };

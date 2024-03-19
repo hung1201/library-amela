@@ -26,7 +26,7 @@ class Token {
 
   async createRefreshToken(userEmail: string) {
     this.refreshToken = jwt.sign({ type: 'refresh' }, config.authSecret, {
-      expiresIn: '2h' // 1 hour
+      expiresIn: '2h'
     });
 
     await this.saveRefreshToken(userEmail);

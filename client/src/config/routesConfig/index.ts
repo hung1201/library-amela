@@ -1,0 +1,52 @@
+import _ from 'lodash';
+import { varToStringParams } from '../../utils/path';
+
+// import AuthConfig, { IAuthRoutesConfig } from "./auth";
+export type IRoute<T = {}> = {
+  path: (params?: T) => string;
+};
+export interface IRoutesConfig {
+  NotFoundPage: IRoute;
+  LoginPage: IRoute;
+  RegisterPage: IRoute;
+  HomePage: IRoute;
+  BookPage: IRoute<{
+    page?: number;
+    pageSize?: number;
+    orderType?: string;
+    sortField?: string;
+  }>;
+  AuthorPage: IRoute<{
+    page?: number;
+    pageSize?: number;
+    orderType?: string;
+    sortField?: string;
+  }>;
+}
+
+const RoutesConfig: IRoutesConfig = {
+  LoginPage: { path: () => '/login' },
+  NotFoundPage: { path: () => '/404' },
+  RegisterPage: { path: () => '/register' },
+  HomePage: { path: () => '/' },
+  BookPage: {
+    path: (params) =>
+      `/cms/books${varToStringParams({
+        variablesArray: Object.keys(params ?? {}).map((key) => ({
+          key: key,
+          value: _.get(params, key)
+        }))
+      })}`
+  },
+  AuthorPage: {
+    path: (params) =>
+      `/cms/authors${varToStringParams({
+        variablesArray: Object.keys(params ?? {}).map((key) => ({
+          key: key,
+          value: _.get(params, key)
+        }))
+      })}`
+  }
+};
+export const DefaultRoute = RoutesConfig.HomePage.path();
+export default RoutesConfig;

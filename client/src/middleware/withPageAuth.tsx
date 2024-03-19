@@ -3,6 +3,7 @@ import { useAuth } from '../services/Auth.context';
 import TokenService from '../services/Token.service';
 import NavService from '../services/Nav.service';
 import Login from '../pages/login';
+import RoutesConfig from '../config/routesConfig';
 
 const withPageAuth = <T extends {}>(
   WrappedComponent: React.ComponentType<T>,
@@ -19,7 +20,7 @@ const withPageAuth = <T extends {}>(
         await tokenService.authenticateTokenSsr();
       }
       if (!options?.requiredAuth && token) {
-        navService.redirectUser('/');
+        navService.redirectUser(RoutesConfig.HomePage.path());
       }
       if (options?.requiredAuth) {
         checkToken();

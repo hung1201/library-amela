@@ -18,3 +18,64 @@ label {
   margin-bottom: 5px;
   margin-top: 20px;
 }
+/** Custom Scrollbar */
+:root {
+  --table-scroll-bar-width: 10px;
+  --scroll-bar-height: 10px;
+}
+
+/* https://css-tricks.com/scrollbars-on-hover/ */
+
+/* width */
+.table-scrollbar::-webkit-scrollbar {
+  width: var(--table-scroll-bar-width);
+  margin-right: 15px;
+  height: var(--scroll-bar-height); /* Set the height of the scrollbar */
+
+  /* background-color: red; */
+}
+
+/* Track */
+.table-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f162;
+
+  /* background-color: white; */
+  /* margin-top: 5px;
+  margin-bottom: 5px; */
+}
+
+/* Handle */
+.table-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.692);
+  border-radius: 50px;
+}
+
+/* Handle on hover */
+.table-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(85, 85, 85, 0.719);
+}
+
+.table-scrollbar {
+  /* padding: 17px 0 17px 17px; */
+  /* mask-image: linear-gradient(to top, transparent, black),
+    linear-gradient(to left, transparent 0px, black 0px); */
+  mask-size: 100% 20000px;
+  mask-position: left bottom;
+  -webkit-mask-image: linear-gradient(to top, transparent, black),
+    linear-gradient(to left, transparent var(--table-scroll-bar-width), black 0px);
+  mask-image: linear-gradient(to top, transparent, black),
+    linear-gradient(to left, transparent var(--table-scroll-bar-width), black 0px);
+  -webkit-mask-size: 100% 20000px;
+  -webkit-mask-position: left bottom;
+  transition: mask-position 0.3s, -webkit-mask-position 0.3s;
+
+  -webkit-mask-position: left top;
+  mask-position: left top;
+}
+
+.table-scrollbar:hover {
+  -webkit-mask-position: left top;
+  mask-position: left top;
+}
+
+/** End **/

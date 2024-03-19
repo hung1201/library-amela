@@ -2,10 +2,17 @@ module.exports = (sequelize: any, DataTypes: any) => {
   const books = sequelize.define(
     'books',
     {
-      pubYear: DataTypes.STRING,
-      authorId: DataTypes.STRING,
-      createdAt: DataTypes.STRING,
-      updatedAt: DataTypes.STRING
+      title: DataTypes.STRING,
+      pubYear: DataTypes.DATE,
+      authorId: {
+        type: DataTypes.NUMBER,
+        reference: {
+          model: 'authors',
+          key: 'id'
+        }
+      },
+      createdAt: { type: DataTypes.DATE },
+      updatedAt: { type: DataTypes.DATE }
     },
     {}
   );

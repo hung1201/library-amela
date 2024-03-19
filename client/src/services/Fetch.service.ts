@@ -1,14 +1,18 @@
 import fetch from 'isomorphic-unfetch';
 
 import Cookies from 'universal-cookie';
+import TokenService from './Token.service';
 
 class FetchService {
   public isofetch(url: string, data: object, type: string): Promise<any> {
+    const token = new TokenService();
+
     return fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
       body: JSON.stringify({ ...data }),
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token.getToken()
       },
       method: type
     })

@@ -4,6 +4,7 @@ import Cookies from 'universal-cookie';
 
 import FetchService from '../services/Fetch.service';
 import NavService from '../services/Nav.service';
+import RoutesConfig from '../config/routesConfig';
 
 class TokenService {
   public saveToken(token: string) {
@@ -30,13 +31,10 @@ class TokenService {
     const cookies = new Cookies(ssr ? ctx.req.headers.cookie : null);
     const token = cookies.get('token');
     const response = await this.checkAuthToken(token, ssr);
-    if (response.success) {
-      const navService = new NavService();
-      navService.redirectUser('/', ctx);
-    }
+
     if (!response.success) {
       const navService = new NavService();
-      navService.redirectUser('/login', ctx);
+      navService.redirectUser(RoutesConfig.LoginPage.path(), ctx);
       this.deleteToken();
     }
   }

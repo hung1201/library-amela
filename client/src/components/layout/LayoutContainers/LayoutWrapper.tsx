@@ -4,12 +4,13 @@ import Header from '../Header';
 import { ILayoutWrapperProps } from './types';
 
 const LayoutWrapper = ({ children, config }: ILayoutWrapperProps) => {
-  console.log('config<>', config);
+  const header = config.BaseHeaderComponent ? <config.BaseHeaderComponent /> : <></>;
+  const footer = config.FooterComponent ? <config.FooterComponent /> : <></>;
   const content = (
     <div className="flex flex-col h-screen">
-      <Header />
+      {header}
       {children}
-      <Footer />
+      {footer}
     </div>
   );
 
