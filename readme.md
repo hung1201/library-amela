@@ -18,12 +18,12 @@ This project has two sections:
 
 1.  There are 7 pages:
 
-- Login ( /login )
-- Register ( /register )
-- Forgot Password ( /forgot-password )
-- Reset password ( /reset-password )
-- Books ( /cms/books )
-- Authors ( /cms/author )
+- Login ( `/login` )
+- Register ( `/register` )
+- Forgot Password ( `/forgot-password `)
+- Reset password ( `/reset-password` )
+- Books ( `/cms/books` )
+- Authors ( `/cms/author` )
 
 The Next app doesn't have an associated database, as all data is handled on the Node API.
 
