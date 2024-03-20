@@ -25,7 +25,10 @@ export const sendMail = (
     setTimeout(() => {
       transporter
         .sendMail(options)
-        .then((res) => resolve({ message: 'Email sent', messageId: res.messageId }))
+        .then((res) => {
+          console.log('res>>', res);
+          resolve({ message: 'Email sent', messageId: res.messageId });
+        })
         .catch((err) => resolve({ message: 'Email sending failed', error: err }));
     }, 500);
   });
