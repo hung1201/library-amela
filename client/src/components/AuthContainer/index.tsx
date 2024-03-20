@@ -12,12 +12,14 @@ import NavService from '../../services/Nav.service';
 import TokenService from '../../services/Token.service';
 import { ILoginIn, ILoginOutput } from '../../types/auth.types';
 import BackButton from '../../components/BackButton';
+import { useTheme } from '@material-ui/core';
 type Props = {
   backgroundImageUrl?: string;
   form?: React.ReactNode;
 };
 
 const AuthContainer = (props: Props) => {
+  const theme = useTheme();
   return (
     <PageContent>
       <div className="h-full p-16 flex flex-col items-start gap-3">
@@ -45,7 +47,10 @@ const AuthContainer = (props: Props) => {
                 </p>
               </div>
             </section>
-            <section className="flex w-full md:w-6/12" style={{ background: '#1C1E53' }}>
+            <section
+              className="flex w-full md:w-6/12"
+              style={{ background: theme.palette.primary.main }}
+            >
               <div className="flex justify-center py-12 px-10 items-center w-full text-base leading-6 text-slate-100 max-md:px-5 max-md:max-w-full">
                 {props.form}
               </div>

@@ -8,8 +8,15 @@ export type IRoute<T = {}> = {
 export interface IRoutesConfig {
   NotFoundPage: IRoute;
   LoginPage: IRoute;
+  ForgotPasswordPage: IRoute;
   RegisterPage: IRoute;
-  HomePage: IRoute;
+  HomePage: IRoute<{
+    page?: number;
+    pageSize?: number;
+    orderType?: string;
+    sortField?: string;
+    title?: string;
+  }>;
   BookPage: IRoute<{
     page?: number;
     pageSize?: number;
@@ -28,7 +35,16 @@ const RoutesConfig: IRoutesConfig = {
   LoginPage: { path: () => '/login' },
   NotFoundPage: { path: () => '/404' },
   RegisterPage: { path: () => '/register' },
-  HomePage: { path: () => '/' },
+  ForgotPasswordPage: { path: () => '/forgot-password' },
+  HomePage: {
+    path: (params) =>
+      `/${varToStringParams({
+        variablesArray: Object.keys(params ?? {}).map((key) => ({
+          key: key,
+          value: _.get(params, key)
+        }))
+      })}`
+  },
   BookPage: {
     path: (params) =>
       `/cms/books${varToStringParams({

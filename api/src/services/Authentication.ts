@@ -1,10 +1,9 @@
-import * as bcrypt from 'bcrypt';
-
+import * as bcrypt from 'bcryptjs';
 import db from '../db/models';
 import { ILoginInput, IRegisterIn } from '../types/user.types';
-
 import { Token } from './Token';
 import { User } from './User';
+import * as mail from '../helpers/sendEmail';
 
 /**
  * Class to abstract the higher level authentication logic away from
@@ -18,7 +17,7 @@ class Authentication {
       throw new Error('You must send all register details.');
     }
 
-    const user = new User(fullName, '', email);
+    const user = new User(fullName, email);
 
     const userExists = await user.doesUserExist();
     if (userExists) {
@@ -38,7 +37,7 @@ class Authentication {
       throw new Error('You must send all login details.');
     }
 
-    const user = new User(null, null, email);
+    const user = new User(null, email);
     const token = new Token();
 
     const userExists = await user.doesUserExist();
@@ -60,8 +59,7 @@ class Authentication {
       id: userExists.id,
       authToken: token.token,
       refreshToken: token.refreshToken,
-      firstName: userExists.firstName,
-      lastName: userExists.lastName,
+      fullName: userExists.fullName,
       email: userExists.email
     };
   }
@@ -98,6 +96,34 @@ class Authentication {
 
     return await token.validateAuthToken(token.token);
   }
+
+  forgotPassword = async (email: string) => {
+    const data = await mail.sendMail(
+      email,
+      'Password Reset',
+      `Please click the link to reset your password: http://localhost:3000/reset-password?email=${email}`
+    );
+
+    if (data?.messageId) {
+      return { success: true, message: 'Please check your email for further instructions.' };
+    }
+    return new Error('There was an error sending the email');
+  };
+  resetPassword = async (body: { email: string; password: string; confirmPassword: string }) => {
+    if (body.password !== body.confirmPassword) {
+      throw new Error('Passwords do not match');
+    }
+    const user = new User(null, body.email);
+    const userExists = await user.doesUserExist();
+    if (!userExists) {
+      throw new Error('No matching user.');
+    }
+    userExists.password = this.hashPassword(body.password);
+    const newUser = await user.saveUser();
+
+    await this.logUserActivity(newUser.id, 'reset-password');
+    return { success: true, message: 'Password reset successfully' };
+  };
 }
 
 export { Authentication };

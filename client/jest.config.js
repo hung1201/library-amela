@@ -4,6 +4,11 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|less|scss)$': 'identity-obj-proxy'
   },
-  // set up for enzyme and allowing scss
-  setupFilesAfterEnv: ['<rootDir>/ui/tests/_setup.tests.ts']
+  setupFilesAfterEnv: ['<rootDir>/src/tests/_setup.tests.ts'],
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  transform: {
+    'node_modules/variables/.+\\.(j|t)sx?$': 'ts-jest'
+  },
+  transformIgnorePatterns: ['node_modules/(?!variables/.*)']
 };

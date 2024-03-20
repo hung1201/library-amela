@@ -25,7 +25,7 @@ const reducer: React.Reducer<{}, IAction> = (state, action) => {
       };
     case ActionType.RemoveDetails:
       return {
-        email: initialState.email
+        ...initialState
       };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

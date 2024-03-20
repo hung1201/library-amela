@@ -18,14 +18,14 @@ describe('test the JWT authorization middleware', () => {
     const randomString = faker.random.alphaNumeric(10);
     const email = `user-${randomString}@email.com`;
     const password = `password`;
-    const firstName = `John`;
-    const lastName = `Smith`;
+    const fullName = `John Doe`;
 
-    await authentication.createUser({ firstName, lastName, email, password });
+    await authentication.createUser({ fullName, email, password });
 
     const { authToken } = await authentication.loginUser({
       email,
-      password
+      password,
+      isRemember: false
     });
 
     const response = await supertest(app)

@@ -1,17 +1,12 @@
 import { Box } from '@material-ui/core';
 import PageContent from '../../components/PageContent';
-import SearchWrapper from '../../components/SearchWrapper';
 import Footer from '../../components/layout/Footer';
 import Header from '../../components/layout/Header';
 import { NextPageWithLayout, withPageLayout } from '../../components/layout/LayoutContainers';
 
-import CourseCard from '../../components/CourseItem';
-import GridLayout from '../../components/GridLayout';
+import HomePage from '../../feature/home';
 import withPageAuth from '../../middleware/withPageAuth';
-
-interface IProps {
-  action: string;
-}
+import RoutesConfig from '../../config/routesConfig';
 
 const Home: NextPageWithLayout = withPageAuth(
   () => {
@@ -25,66 +20,14 @@ const Home: NextPageWithLayout = withPageAuth(
             alignItems: 'center'
           }}
         >
-          <SearchWrapper />
-          <GridLayout
-            spacing={2}
-            elements={[
-              {
-                id: '1',
-                size: 4,
-                sm: 6,
-                xs: 12,
-                element: (
-                  <CourseCard
-                    imageUrl="https://static.remove.bg/sample-gallery/graphics/bird-thumbnail.jpg"
-                    title="Course 1 Course 1 Course 1"
-                    description="lorem Course 1 Course 1 Course 1 Course 1 "
-                    duration="1"
-                    videoCount={1}
-                    studentCount={1}
-                  />
-                )
-              },
-              {
-                id: '2',
-                size: 4,
-                sm: 6,
-                xs: 12,
-                element: (
-                  <CourseCard
-                    imageUrl="https://static.remove.bg/sample-gallery/graphics/bird-thumbnail.jpg"
-                    title="Course 1"
-                    description="lorem"
-                    duration="1"
-                    videoCount={1}
-                    studentCount={1}
-                  />
-                )
-              },
-              {
-                id: '3',
-                size: 4,
-                sm: 6,
-                xs: 12,
-                element: (
-                  <CourseCard
-                    imageUrl="https://static.remove.bg/sample-gallery/graphics/bird-thumbnail.jpg"
-                    title="Course 1"
-                    description="lorem"
-                    duration="1"
-                    videoCount={1}
-                    studentCount={1}
-                  />
-                )
-              }
-            ]}
-          />
+          <HomePage />
         </Box>
       </PageContent>
     );
   },
   {
-    requiredAuth: true
+    requiredAuth: true,
+    redirect: RoutesConfig.LoginPage.path()
   }
 );
 Home.getLayout = withPageLayout({

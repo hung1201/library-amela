@@ -23,16 +23,17 @@ class Books {
   };
 
   getBook = async (payload: IFetchBookListInput): Promise<IFetchBookListOutput> => {
-    const [rows,] = await sequelize.query(
+    const [rows] = await sequelize.query(
       ` SELECT books.*, authors.name AS author
         FROM books 
         LEFT JOIN authors ON books."authorId" = authors."id"
-        ORDER BY ${payload.sortField} ${payload.order}
+        ${payload.title ? `WHERE books.title ILIKE '%${payload.title}%'` : ''}
+        ORDER BY "${payload.sortField}" ${payload.order}
         LIMIT ${payload.pageSize}
         OFFSET ${Number(payload.page) * Number(payload.pageSize)};
       `
     );
-    const [total,] = await sequelize.query(
+    const [total] = await sequelize.query(
       ` SELECT books.*
         FROM books 
       `
@@ -56,9 +57,16 @@ class Books {
   }
 
   updateBook = async (id: string, updatedData: Partial<IInsertBookInput>) => {
-    const data = await db.books.update(updatedData, {
-      where: { id }
-    });
+    const data = await db.books.update(
+      {
+        ...updatedData,
+        authorId: updatedData.authorId ?? null,
+        updatedAt: new Date().toISOString()
+      },
+      {
+        where: { id }
+      }
+    );
     if (!updatedData.authorId) {
       await sequelize.query(
         `UPDATE authors
@@ -66,15 +74,20 @@ class Books {
         WHERE id = (SELECT "authorId" FROM books WHERE id = ${id});
         `
       );
-    }
-    else {
+    } else {
+      await sequelize.query(
+        `UPDATE authors
+        SET "bookIds" = array_remove("bookIds", ${id})
+        WHERE id = (SELECT "authorId" FROM books WHERE id = ${id});
+        `
+      );
       await sequelize.query(
         `UPDATE authors
         SET "bookIds" = array_append("bookIds", ${id})
         WHERE id = ${updatedData.authorId};
         `
       );
-      }
+    }
     return data;
   };
 

@@ -18,17 +18,14 @@ services:
     command: sh -c "npm run db-migrate && npm run run-dev"
     container_name: pc-api-dev
     environment:
-      DB_USER: user
+      DB_USER: admin
       DB_PASSWORD: password
-      DB_NAME: next-ts-jwt-boilerplate
+      DB_NAME: postgres
       DB_HOST: db
       DB_PORT: 5432
       DB_TEST_HOST: db-test
     ports:
       - 3001:3001
-    volumes:
-      - ./api:/home/app/api
-      - /home/app/api/node_modules
     working_dir: /home/app/api
     restart: on-failure
     depends_on:
@@ -37,8 +34,8 @@ services:
   db:
     image: postgres
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_DB=next-ts-jwt-boilerplate
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
@@ -48,8 +45,8 @@ services:
   db-test:
     image: postgres
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_DB=next-ts-jwt-boilerplate
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:

@@ -1,8 +1,7 @@
 import * as express from 'express';
 export interface IUser {
   id: number;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   password?: string;
   authToken?: string;
@@ -26,7 +25,6 @@ export interface ILoginOutput {
   success: boolean;
   authToken?: string;
   refreshToken?: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
 }

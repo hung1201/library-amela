@@ -1,15 +1,13 @@
 import db from '../db/models';
 
 class User {
-  public firstName: string;
-  public lastName: string;
+  public fullName: string;
   public email: string;
   public passwordHash: string;
 
-  constructor(firstName: string | null, lastName: string | null, email: string | null) {
-    if (firstName && lastName) {
-      this.firstName = firstName;
-      this.lastName = lastName;
+  constructor(fullName: string | null, email: string | null) {
+    if (fullName) {
+      this.fullName = fullName;
     }
     if (email) {
       this.email = email;
@@ -29,8 +27,7 @@ class User {
 
   saveUser() {
     return db.users.create({
-      firstName: this.firstName,
-      lastName: this.lastName,
+      fullName: this.fullName,
       email: this.email,
       password: this.passwordHash
     });
@@ -40,7 +37,7 @@ class User {
     return db.users.findOne({
       raw: true,
       where: { id: userId },
-      attributes: ['firstName', 'lastName', 'email']
+      attributes: ['fullName', 'email']
     });
   }
 }

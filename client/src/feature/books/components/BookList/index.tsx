@@ -22,7 +22,7 @@ type Props = {};
 const BookList = (props: Props) => {
   const { open } = useModalAction();
   const theme = useTheme();
-  const { data, isLoading } = useBookList({});
+  const { data, isFetching } = useBookList({});
   const query = useQueryParams();
   const sortField = React.useRef<string>(query.sortField);
   const sortType = React.useRef<Order>(query.orderType as string as Order);
@@ -33,117 +33,119 @@ const BookList = (props: Props) => {
     total: data?.paging?.total || 0
   };
   return (
-    <Datatable
-      loading={isLoading}
-      sorting={{
-        sortField: sortField.current,
-        order: sortType.current
-      }}
-      paging={paging}
-      fullHeight
-      disablePaper
-      data={data?.books ?? []}
-      tableCellMainRowProps={() => ({
-        sx: {
-          background: `${theme.palette.primary.light} !important`,
-          color: theme.palette.primary.dark,
-          fontWeight: 700
-        },
-        filterStyle: {
-          background: theme?.palette?.background?.paper
-        }
-      })}
-      columns={[
-        {
-          label: 'Title',
-          id: 'title',
-          render(rowIndex, cellValue, columnIndex, data) {
-            return <Box>{cellValue}</Box>;
+    <>
+      <Datatable
+        loading={isFetching}
+        sorting={{
+          sortField: sortField.current,
+          order: sortType.current
+        }}
+        paging={paging}
+        fullHeight
+        disablePaper
+        data={data?.books ?? []}
+        tableCellMainRowProps={() => ({
+          sx: {
+            background: `${theme.palette.primary.light} !important`,
+            color: theme.palette.primary.dark,
+            fontWeight: 700
           },
-          inData: true
-        },
-        {
-          label: 'Publication Year',
-          id: 'pubYear',
-          render(rowIndex, cellValue, columnIndex, data) {
-            return <Box>{moment(cellValue).format('DD-MM-YYYY')}</Box>;
+          filterStyle: {
+            background: theme?.palette?.background?.paper
+          }
+        })}
+        columns={[
+          {
+            label: 'Title',
+            id: 'title',
+            render(rowIndex, cellValue, columnIndex, data) {
+              return <Box>{cellValue}</Box>;
+            },
+            inData: true
           },
-          inData: true
-        },
-        {
-          label: 'Author',
-          id: 'author',
-          render(rowIndex, cellValue, columnIndex, data) {
-            return <Box>{cellValue}</Box>;
+          {
+            label: 'Publication Year',
+            id: 'pubYear',
+            render(rowIndex, cellValue, columnIndex, data) {
+              return <Box>{cellValue ? moment(cellValue).format('DD-MM-YYYY') : <></>}</Box>;
+            },
+            inData: true
           },
-          inData: true
-        },
-        {
-          label: '',
-          id: 'actions',
-          render: (rowIndex, cellValue, columnIndex, data) => (
-            <Actions data={data} rowIndex={rowIndex} />
-          ),
-          inData: false
-        }
-      ]}
-      title={({ handleFiltering, globalSearchTextInput, filtersIsEnabled, handleReset }) => (
-        <div>
-          <div className="flex justify-between items-center w-full py-2">
-            <span style={{ fontWeight: 700 }}>Books</span>
-            <div className="flex items-center gap-5">
-              <Button
-                startIcon={<AddIcon />}
-                variant="contained"
-                color="primary"
-                style={{
-                  borderRadius: '8px',
-                  boxShadow: 'none',
-                  textTransform: 'none'
-                }}
-                onClick={() => open(ModalIDs.ADD_EDIT_BOOK_MODAL, {})}
-              >
-                <Typography>Create</Typography>
-              </Button>
+          {
+            label: 'Author',
+            id: 'author',
+            render(rowIndex, cellValue, columnIndex, data) {
+              return <Box>{cellValue}</Box>;
+            },
+            inData: true
+          },
+          {
+            label: '',
+            id: 'actions',
+            render: (rowIndex, cellValue, columnIndex, data) => (
+              <Actions data={data} rowIndex={rowIndex} />
+            ),
+            inData: false
+          }
+        ]}
+        title={({ handleFiltering, globalSearchTextInput, filtersIsEnabled, handleReset }) => (
+          <div>
+            <div className="flex justify-between items-center w-full py-2">
+              <span style={{ fontWeight: 700 }}>Books</span>
+              <div className="flex items-center gap-5">
+                <Button
+                  startIcon={<AddIcon />}
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    borderRadius: '8px',
+                    boxShadow: 'none',
+                    textTransform: 'none'
+                  }}
+                  onClick={() => open(ModalIDs.ADD_EDIT_BOOK_MODAL, {})}
+                >
+                  <Typography>Create</Typography>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      resetFilteringAction={() => {
-        nav.redirectUser(
-          RoutesConfig.BookPage.path({
-            page: query.page ?? DefaultPaging.page,
-            pageSize: query.pageSize ?? DefaultPaging.pageSize,
-            sortField: query.sortField ?? DefaultPaging.sortField,
-            orderType: query.orderType ?? DefaultPaging.orderType
-          })
-        );
-      }}
-      handleDataChange={(
-        selectedPage,
-        pageSize,
-        previousOrder,
-        _sortField,
-        newOrder,
-        filteringData
-      ) => {
-        sortType.current = newOrder;
-        sortField.current = _sortField;
-
-        nav.redirectUser(
-          RoutesConfig.BookPage.path({
-            ...query,
-            ...cleanObject({
-              page: selectedPage,
-              pageSize,
-              sortField: _sortField,
-              orderType: previousOrder as any,
-              search: filteringData.__globalValue
+        )}
+        resetFilteringAction={() => {
+          nav.redirectUser(
+            RoutesConfig.BookPage.path({
+              page: query.page ?? DefaultPaging.page,
+              pageSize: query.pageSize ?? DefaultPaging.pageSize,
+              sortField: query.sortField ?? DefaultPaging.sortField,
+              orderType: query.orderType ?? DefaultPaging.orderType
             })
-          })
-        );
-      }}
-    />
+          );
+        }}
+        handleDataChange={(
+          selectedPage,
+          pageSize,
+          previousOrder,
+          _sortField,
+          newOrder,
+          filteringData
+        ) => {
+          sortType.current = newOrder;
+          sortField.current = _sortField;
+
+          nav.redirectUser(
+            RoutesConfig.BookPage.path({
+              ...query,
+              ...cleanObject({
+                page: selectedPage,
+                pageSize,
+                sortField: _sortField,
+                orderType: previousOrder as any,
+                search: filteringData.__globalValue
+              })
+            })
+          );
+        }}
+      />
+    </>
   );
 };
 interface IActionProps {

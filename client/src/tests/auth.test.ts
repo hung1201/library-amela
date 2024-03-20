@@ -1,8 +1,8 @@
 require('dotenv').config();
-import faker from 'faker';
-import jwt from 'jsonwebtoken';
+import * as faker from 'faker';
+import * as jwt from 'jsonwebtoken';
 import Cookies from 'universal-cookie';
-import AuthService from '../services/auth.service';
+import * as AuthService from '../services/auth';
 
 const user: any = {
   email: process.env.TEST_EMAIL,
@@ -10,8 +10,7 @@ const user: any = {
 };
 
 const newUser: any = {
-  firstName: faker.name.firstName(),
-  lastName: faker.name.lastName(),
+  fullName: faker.name.firstName(),
   email: faker.internet.email(),
   password: faker.internet.password()
 };
@@ -23,19 +22,19 @@ const fakeToken = jwt.sign({ ilove: fakeTokenValue }, fakeTokenSecret);
 describe('Login and register', () => {
   it('registers user', () => {
     return AuthService.registerUser({
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
+      fullName: newUser.fullName,
       email: newUser.email,
       password: newUser.password
-    }).then(response => {
+    }).then((response) => {
       expect(response.success).toBeTruthy();
     });
   });
   it('logs user in', () => {
     return AuthService.loginUser({
       email: user.email,
-      password: user.password
-    }).then(response => {
+      password: user.password,
+      isRemember: true
+    }).then((response) => {
       expect(response.success).toBeTruthy();
       expect(response.authToken).toBeDefined();
     });

@@ -140,7 +140,6 @@ export default function DatatableTemplate<T>(props: ITemplateProps<T>): ReactEle
               {TableDataElement}
             </Box>
             <Box sx={{ display: { sm: 'none', xs: 'block', flex: 1 } }}>
-              {/* hidden up to small */}
               <MobileList
                 {...props}
                 filteringData={filteringData}

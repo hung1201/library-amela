@@ -65,7 +65,6 @@ export const ModalContext = React.createContext([initialState, (action: IAction)
 
 export const ModalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(modalReducer, initialState);
-  console.log('state', state);
   return <ModalContext.Provider value={[state, dispatch]}>{children}</ModalContext.Provider>;
 };
 

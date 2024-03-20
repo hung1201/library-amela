@@ -84,10 +84,7 @@ export default function AppTable<T>(props: ITableProps<T>): ReactElement {
               display: 'flex',
               flexDirection: 'column',
               flex: 1,
-
-              // for testing...
               position: 'relative'
-              // for testing...
             }
           : undefined)
       }}
@@ -96,14 +93,12 @@ export default function AppTable<T>(props: ITableProps<T>): ReactElement {
         sx={{
           ...(fullHeight
             ? {
-                // for testing...
                 display: 'flex',
                 flexDirection: 'column',
                 flex: 1,
                 position: stickyHeader ? 'absolute' : undefined,
                 width: '100%',
                 height: '100%'
-                // for testing...
               }
             : {})
         }}
@@ -121,7 +116,7 @@ export default function AppTable<T>(props: ITableProps<T>): ReactElement {
         )}
         <TableContainer
           style={{
-            minHeight: props?.minHeight || undefined,
+            minHeight: props?.minHeight || 500,
             justifyContent: 'space-between',
             display: 'flex',
             flexDirection: 'column',

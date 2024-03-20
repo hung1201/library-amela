@@ -9,10 +9,6 @@ import TokenService from '../../services/Token.service';
 interface IProps {}
 
 function Header(props: IProps) {
-  const tokenService = new TokenService();
-  const [globalMessaging, messageDispatch] = useGlobalMessaging();
-  const [auth, authDispatch] = useAuth();
-
   return (
     <Head>
       <title>Library</title>

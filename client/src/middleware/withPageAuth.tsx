@@ -9,12 +9,26 @@ const withPageAuth = <T extends {}>(
   WrappedComponent: React.ComponentType<T>,
   options?: {
     requiredAuth?: boolean;
+    redirect?: string | ((props: T) => React.ReactNode);
   }
 ) => {
   return (props: T) => {
     const tokenService = new TokenService();
+    const [state] = useAuth();
+
     const token = useMemo(() => tokenService.getToken(), []);
+    const isLoggedIn = Boolean(state.email && token);
     const navService = new NavService();
+    const accessPermission = useMemo(() => {
+      if (options.requiredAuth === undefined) {
+        return true;
+      } else if (!options.requiredAuth && !isLoggedIn) {
+        return true;
+      }
+      if (options.requiredAuth && isLoggedIn) {
+        return true;
+      } else return false;
+    }, []);
     useLayoutEffect(() => {
       async function checkToken() {
         await tokenService.authenticateTokenSsr();
@@ -26,8 +40,15 @@ const withPageAuth = <T extends {}>(
         checkToken();
       }
     }, [token, options.requiredAuth]);
-
-    return <WrappedComponent {...props} />;
+    return (
+      <>
+        {accessPermission ? (
+          <WrappedComponent {...props} />
+        ) : (
+          typeof options?.redirect === 'function' && options?.redirect(props)
+        )}
+      </>
+    );
   };
 };
 

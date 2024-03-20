@@ -1,3 +1,4 @@
+import { useTheme } from '@material-ui/core';
 import * as React from 'react';
 
 interface SocialMediaLinkProps {
@@ -29,9 +30,14 @@ const programLinks = ['Merdeka Belajar', 'Finterpreneur'];
 const supportLinks = ['Tentang Kami', 'Ketentuan', 'Kebijakan Privasi'];
 
 const Footer: React.FC = () => {
+  const theme = useTheme();
+
   return (
-    <footer className="flex flex-col mt-auto">
-      <div className="px-5 pt-16 bg-blue-950 md:px-20 lg:px-32" style={{ background: '#1C1E53' }}>
+    <footer className="flex flex-col">
+      <div
+        className="px-5 pt-16 bg-blue-950 md:px-20 lg:px-32"
+        style={{ background: theme.palette.primary.main }}
+      >
         <div className="flex flex-col md:flex-row md:gap-5">
           <div className="flex flex-col md:w-6/12">
             <div className="flex flex-col text-white md:mt-10">
@@ -42,7 +48,7 @@ const Footer: React.FC = () => {
               <div
                 className="flex gap-5 justify-between flex-wrap px-2 py-3 md:w-9/12 md:px-8 md:py-5 md:mt-28 bg-amber-200 rounded-md"
                 style={{
-                  backgroundColor: '#FCD980'
+                  backgroundColor: theme.palette.secondary.main
                 }}
               >
                 <div className=" flex flex-col" style={{ color: '#282938' }}>

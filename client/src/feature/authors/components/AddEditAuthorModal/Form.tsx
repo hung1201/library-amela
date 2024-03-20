@@ -6,7 +6,7 @@ import { ModalIDs } from '../../../../config/modalsConfig';
 import { useModalAction } from '../../../../services/ModalProvider';
 import { IAuthorModels } from '../../../../types/authors.types';
 import { useAddAuthor, useEditAuthor } from '../../api';
-import { Chip, Input, MenuItem, Select } from '@material-ui/core';
+import { Chip, Input, MenuItem, Select, useTheme } from '@material-ui/core';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -18,6 +18,7 @@ const MenuProps = {
   }
 };
 const Form = (props: AddEditAuthorModalParams) => {
+  const theme = useTheme();
   const { close } = useModalAction();
   const { refetch } = useAuthorList({ enabled: false });
   const { data: books } = useBookList({
@@ -38,13 +39,19 @@ const Form = (props: AddEditAuthorModalParams) => {
       refetch();
     }
   });
-  useEffect(() => {
-    if (props?.data?.id) {
-    }
-  }, []);
 
   return (
     <Formik
+      validate={(values) => {
+        const errors = { name: '', bookIds: '' };
+        if (!values.name) {
+          errors.name = 'Required';
+        }
+        const checkErrorsEmpty = Object.values(errors).filter((x) => x);
+        if (checkErrorsEmpty.length > 0) {
+          return errors;
+        }
+      }}
       initialValues={
         props?.data?.id
           ? {
@@ -69,9 +76,13 @@ const Form = (props: AddEditAuthorModalParams) => {
         }
         add({ ...values });
       }}
-      render={(props: any) => (
+      render={({ errors, touched, ...props }) => (
         <FormikForm autoComplete="off">
-          <div className="justify-center items-start px-8 py-7 mt-6 rounded-lg border-2 border-solid border-black border-opacity-10 max-md:px-5 max-md:mt-10 max-md:max-w-full">
+          <div
+            className={`justify-center items-start px-8 py-7 mt-6 rounded-lg border-2 border-solid ${
+              errors.name && touched.name ? 'border-red-500' : 'border-black border-opacity-10'
+            } max-md:px-5 max-md:mt-10 max-md:max-w-full`}
+          >
             <label htmlFor="name" className="sr-only">
               Name
             </label>
@@ -85,6 +96,7 @@ const Form = (props: AddEditAuthorModalParams) => {
               autoComplete="off"
             />
           </div>
+          {errors.name && touched.name ? <div className="text-red-500">{errors.name}</div> : null}
           <div className="justify-center items-start px-8 py-7 mt-4 whitespace-nowrap rounded-lg border-2 border-solid border-black border-opacity-10 max-md:px-5 max-md:max-w-full">
             <label htmlFor="password" className="sr-only">
               Book
@@ -139,7 +151,7 @@ const Form = (props: AddEditAuthorModalParams) => {
           <button
             type="submit"
             className="justify-center items-center px-2 py-3 mt-10 text-lg font-bold tracking-normal text-gray-800 bg-amber-200 rounded-md max-md:px-5 w-full"
-            style={{ background: '#FCD980', letterSpacing: 4 }}
+            style={{ background: theme.palette.secondary.main, letterSpacing: 4 }}
           >
             Save
           </button>

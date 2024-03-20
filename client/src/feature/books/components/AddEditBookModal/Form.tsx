@@ -8,7 +8,7 @@ import { ModalIDs } from '../../../../config/modalsConfig';
 import { useAuthorList, useBookList } from '../../../../api';
 import moment from 'moment';
 import { useAddBook, useEditBook } from '../../api';
-import { Chip, IconButton, Input, MenuItem, Select } from '@material-ui/core';
+import { Chip, IconButton, Input, MenuItem, Select, useTheme } from '@material-ui/core';
 import { CloseOutlined } from '@material-ui/icons';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -21,6 +21,7 @@ const MenuProps = {
   }
 };
 const Form = (props: AddEditBookModalParams) => {
+  const theme = useTheme();
   const { close } = useModalAction();
   const { refetch } = useBookList({ enabled: false });
   const { data: authors } = useAuthorList({
@@ -41,18 +42,26 @@ const Form = (props: AddEditBookModalParams) => {
       refetch();
     }
   });
-  useEffect(() => {
-    if (props?.data?.id) {
-    }
-  }, []);
 
   return (
     <Formik
+      validate={(values) => {
+        const errors = { title: '', pubYear: '', authorId: '' };
+        if (!values.title) {
+          errors.title = 'Required';
+        }
+        const checkErrorsEmpty = Object.values(errors).filter((x) => x);
+        if (checkErrorsEmpty.length > 0) {
+          return errors;
+        }
+      }}
       initialValues={
         props?.data?.id
           ? {
               title: props.data.title ?? '',
-              pubYear: moment(props.data.pubYear).format('YYYY-MM-DD') ?? '',
+              pubYear: props.data.pubYear
+                ? moment(props.data.pubYear).format('YYYY-MM-DD')
+                : undefined,
               authorId: props.data.authorId ?? ''
             }
           : {
@@ -68,15 +77,27 @@ const Form = (props: AddEditBookModalParams) => {
         if (props?.data?.id) {
           edit({
             id: props.data.id,
-            body: { ...values, authorId: values.authorId ? values.authorId : undefined }
+            body: {
+              ...values,
+              authorId: values.authorId ? values.authorId : undefined,
+              pubYear: values.pubYear ? values.pubYear : undefined
+            }
           });
           return;
         }
-        add({ ...values, authorId: values.authorId ? values.authorId : undefined });
+        add({
+          ...values,
+          authorId: values.authorId ? values.authorId : undefined,
+          pubYear: values.pubYear ? values.pubYear : undefined
+        });
       }}
-      render={(props) => (
+      render={({ errors, touched, ...props }) => (
         <FormikForm autoComplete="off">
-          <div className="justify-center items-start px-8 py-7 mt-6 rounded-lg border-2 border-solid border-black border-opacity-10 max-md:px-5 max-md:mt-10 max-md:max-w-full">
+          <div
+            className={`justify-center items-start px-8 py-7 mt-6 rounded-lg border-2 border-solid ${
+              errors.title && touched.title ? 'border-red-500' : 'border-black border-opacity-10'
+            } max-md:px-5 max-md:mt-10 max-md:max-w-full`}
+          >
             <label htmlFor="name" className="sr-only">
               Title
             </label>
@@ -90,6 +111,9 @@ const Form = (props: AddEditBookModalParams) => {
               autoComplete="off"
             />
           </div>
+          {errors.title && touched.title ? (
+            <div className="text-red-500">{errors.title}</div>
+          ) : null}
           <div className="justify-center items-start px-8 py-7 mt-4 whitespace-nowrap rounded-lg border-2 border-solid border-black border-opacity-10 max-md:px-5 max-md:max-w-full">
             <label htmlFor="email" className="sr-only">
               Publication Year
@@ -171,7 +195,7 @@ const Form = (props: AddEditBookModalParams) => {
           <button
             type="submit"
             className="justify-center items-center px-2 py-3 mt-10 text-lg font-bold tracking-normal text-gray-800 bg-amber-200 rounded-md max-md:px-5 w-full"
-            style={{ background: '#FCD980', letterSpacing: 4 }}
+            style={{ background: theme.palette.secondary.main, letterSpacing: 4 }}
           >
             Save
           </button>

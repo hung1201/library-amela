@@ -9,14 +9,17 @@ export const useBookList = (options: {
   onSuccess?: () => void;
   enabled?: boolean;
   filtering?: IFetchBookListInput;
+  isAuthored?: boolean;
 }) => {
   const query = useQueryParams();
   const { enabled = true } = options;
   const filtering: IFetchBookListInput = {
     page: options?.filtering?.page ?? query.page.toString(),
     pageSize: options?.filtering?.pageSize ?? query.pageSize.toString(),
-    order: query.orderType as 'asc' | 'desc',
-    sortField: query.sortField
+    order: options?.filtering?.order ?? (query.orderType as 'asc' | 'desc'),
+    sortField: options?.filtering?.sortField ?? query.sortField,
+    title: query.title,
+    isAuthored: options.isAuthored ? String(options.isAuthored) : undefined
   };
   return useQuery(
     ['fetchBooks', ...Object.values(filtering)],

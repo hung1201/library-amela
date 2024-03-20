@@ -17,7 +17,6 @@ export interface ILoginOutput {
   success: boolean;
   authToken?: string;
   refreshToken?: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
 }

@@ -14,6 +14,8 @@ export interface IFetchBookListInput {
   order?: 'asc' | 'desc';
   page?: string;
   pageSize?: string;
+  title?: string;
+  isAuthored?: string;
 }
 export interface IFetchBookListOutput {
   books: Array<IBookModels & { author: string }>;

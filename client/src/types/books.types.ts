@@ -3,6 +3,8 @@ export interface IFetchBookListInput {
   order?: 'asc' | 'desc';
   page?: string;
   pageSize?: string;
+  title?: string;
+  isAuthored?: string;
 }
 export interface IBookModels {
   id: number;
@@ -14,5 +16,7 @@ export interface IFetchBookListOutput {
   books: Array<IBookModels & { author: string }>;
   paging: {
     total: number;
+    page: number;
+    pageSize: number;
   };
 }

@@ -1,4 +1,8 @@
 import * as React from 'react';
+import RoutesConfig from '../../../../config/routesConfig';
+import useDebounce from '../../../../hook/useDebounce';
+import NavService from '../../../../services/Nav.service';
+import { useQueryParams } from '../../common';
 
 interface CategoryItemProps {
   label: string;
@@ -8,7 +12,7 @@ interface CategoryItemProps {
 const CategoryItem: React.FC<CategoryItemProps> = ({ label, isActive = false }) => {
   const textColor = isActive ? 'text-indigo-700' : 'text-gray-800';
 
-  return <div className={`${textColor}`}>{label}</div>;
+  return <div className={`${textColor} cursor-pointer`}>{label}</div>;
 };
 
 const SearchWrapper: React.FC = () => {
@@ -38,6 +42,13 @@ interface SearchInputProps {
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({ placeholder }) => {
+  const [search, setSearch] = React.useState('');
+  const query = useQueryParams();
+  const nav = new NavService();
+  const searchDebounce = useDebounce(search, 500);
+  React.useEffect(() => {
+    nav.redirectUser(RoutesConfig.HomePage.path({ ...query, title: searchDebounce }));
+  }, [searchDebounce]);
   return (
     <div
       className="justify-center items-start self-center px-12 py-6 max-w-full text-xl tracking-normal leading-8 text-gray-800 rounded-lg border-2 border-solid border-gray-800 border-opacity-60  max-md:px-5"
@@ -47,11 +58,16 @@ const SearchInput: React.FC<SearchInputProps> = ({ placeholder }) => {
         {placeholder}
       </label>
       <input
+        autoComplete="off"
         type="search"
         id="search"
         className="w-full bg-transparent outline-none"
         placeholder={placeholder}
         aria-label={placeholder}
+        value={search ?? ''}
+        onChange={(e) => {
+          setSearch(e.target.value);
+        }}
       />
     </div>
   );

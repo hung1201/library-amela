@@ -9,10 +9,13 @@ import { ActionType, useAuth } from '../../services/Auth.context';
 import NavService from '../../services/Nav.service';
 import TokenService from '../../services/Token.service';
 import { ILoginIn, ILoginOutput } from '../../types/auth.types';
+import { useTheme } from '@material-ui/core';
+import { notistack } from '../../utils/notistack';
 
 interface IProps {}
 
 function Login(props: IProps) {
+  const theme = useTheme();
   const [auth, authDispatch] = useAuth();
   const navService = new NavService();
   return (
@@ -28,6 +31,24 @@ function Login(props: IProps) {
               Persiapkan diri untuk masa depan yang penuh dengan bintang
             </p>
             <Formik
+              validate={(values) => {
+                const errors = { email: '', password: '' };
+                if (!values.email) {
+                  errors.email = 'Required';
+                } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+                  errors.email = 'Invalid email address';
+                }
+                if (values.password === '') {
+                  errors.password = 'Required';
+                }
+                if (values.password.length < 8) {
+                  errors.password = 'Password must be at least 8 characters';
+                }
+                const checkErrorsEmpty = Object.values(errors).filter((x) => x);
+                if (checkErrorsEmpty.length > 0) {
+                  return errors;
+                }
+              }}
               initialValues={{
                 email: '',
                 password: '',
@@ -52,17 +73,27 @@ function Login(props: IProps) {
                         type: ActionType.SetDetails,
                         payload: {
                           email: res.email,
-                          name: `${res.firstName ?? ''} ${res.lastName ?? ''}`
+                          name: `${res.fullName ?? ''}`
                         }
                       });
                       navService.redirectUser(RoutesConfig.HomePage.path());
+                      return;
                     }
+                    throw new Error('Login failed! Please check your email and password again');
                   })
-                  .catch();
+                  .catch((err: Error): void => {
+                    notistack.error(err.message);
+                  });
               }}
-              render={() => (
+              render={({ values, errors, touched }) => (
                 <Form autoComplete="off">
-                  <div className="justify-center items-start px-8 py-7 mt-4 whitespace-nowrap rounded-lg border-2 border-solid border-white border-opacity-10 max-md:px-5 max-md:max-w-full">
+                  <div
+                    className={`justify-center items-start px-8 py-7 mt-4 whitespace-nowrap rounded-lg border-2 border-solid ${
+                      errors.email && touched.email
+                        ? 'border-red-500'
+                        : 'border-white border-opacity-10'
+                    } max-md:px-5 max-md:max-w-full`}
+                  >
                     <label htmlFor="email" className="sr-only">
                       Email
                     </label>
@@ -72,11 +103,22 @@ function Login(props: IProps) {
                       name="email"
                       placeholder="Email"
                       aria-label="Email"
-                      className="w-full bg-transparent focus:outline-none text-white"
+                      className={`w-full bg-transparent focus:outline-none text-white ${
+                        errors.email && touched.email ? 'text-red-500' : ''
+                      }`}
                       autoComplete="off"
                     />
                   </div>
-                  <div className="justify-center items-start px-8 py-7 mt-4 whitespace-nowrap rounded-lg border-2 border-solid border-white border-opacity-10 max-md:px-5 max-md:max-w-full">
+                  {errors.email && touched.email ? (
+                    <div className="text-red-500">{errors.email}</div>
+                  ) : null}
+                  <div
+                    className={`justify-center items-start px-8 py-7 mt-4 whitespace-nowrap rounded-lg border-2 border-solid ${
+                      errors.password && touched.password
+                        ? 'border-red-500'
+                        : 'border-white border-opacity-10'
+                    } max-md:px-5 max-md:max-w-full`}
+                  >
                     <label htmlFor="password" className="sr-only">
                       Password
                     </label>
@@ -86,10 +128,15 @@ function Login(props: IProps) {
                       name="password"
                       placeholder="Pas*****"
                       aria-label="Password"
-                      className="w-full bg-transparent focus:outline-none text-white"
+                      className={`w-full bg-transparent focus:outline-none text-white ${
+                        errors.password && touched.password ? 'text-red-500' : ''
+                      }`}
                       autoComplete="off"
                     />
                   </div>
+                  {errors.password && touched.password ? (
+                    <div className="text-red-500">{errors.password}</div>
+                  ) : null}
                   <div>
                     <label className="flex items-center mt-4 ml-1">
                       <Field
@@ -106,7 +153,7 @@ function Login(props: IProps) {
                   <button
                     type="submit"
                     className="justify-center items-center px-16 py-7 mt-10 text-lg font-bold tracking-normal text-gray-800 bg-amber-200 rounded-md max-md:px-5 w-full"
-                    style={{ background: '#FCD980', letterSpacing: 4 }}
+                    style={{ background: theme.palette.secondary.main, letterSpacing: 4 }}
                   >
                     MUSK
                   </button>
@@ -120,11 +167,23 @@ function Login(props: IProps) {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  navService.redirectUser('/register');
+                  navService.redirectUser(RoutesConfig.RegisterPage.path());
                 }}
                 className="underline"
               >
                 Daftar
+              </a>
+            </p>
+            <p className="self-center mt-1 text-lg flex gap-1 tracking-normal text-white underline">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navService.redirectUser(RoutesConfig.ForgotPasswordPage.path());
+                }}
+                className="underline"
+              >
+                Lupa password
               </a>
             </p>
           </div>

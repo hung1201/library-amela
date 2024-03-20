@@ -7,9 +7,10 @@ const LayoutWrapper = ({ children, config }: ILayoutWrapperProps) => {
   const header = config.BaseHeaderComponent ? <config.BaseHeaderComponent /> : <></>;
   const footer = config.FooterComponent ? <config.FooterComponent /> : <></>;
   const content = (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col justify-between">
       {header}
-      {children}
+      <div className="flex-1">{children}</div>
+
       {footer}
     </div>
   );
