@@ -30,6 +30,7 @@ The Next app doesn't have an associated database, as all data is handled on the 
 
 - Development: run `docker-compose up -d --build`
 - Development (optional): run `npm install` on the host machine to install dependencies for Typescript definitions
+- Client will be hosted on `http://localhost:3000` and server will ready on `http://localhost:3001`
 
 ## Installation (manual, no Docker)
 

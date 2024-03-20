@@ -28,6 +28,8 @@ services:
       - 3001:3001
     working_dir: /home/app/api
     restart: on-failure
+    links:
+      - db
     depends_on:
       - db
       - db-test
