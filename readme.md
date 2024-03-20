@@ -16,6 +16,15 @@ This project has two sections:
 - Client side Next.js application built on a [custom Node server] for the server side rendered React application.
 - Server side API built in Node and Express to handle requests from the Next.js application.
 
+1.  There are 7 pages:
+
+- Login ( /login )
+- Register ( /register )
+- Forgot Password ( /forgot-password )
+- Reset password ( /reset-password )
+- Books ( /cms/books )
+- Authors ( /cms/author )
+
 The Next app doesn't have an associated database, as all data is handled on the Node API.
 
 ## Prerequisite
