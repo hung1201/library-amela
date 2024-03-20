@@ -78,15 +78,12 @@ router.post('/login', validation.requestSchemaValidation(loginSchema), (req: ILo
       let payload: ILoginOutput = {
         success: true,
         fullName: theUser.fullName,
-        email: theUser.email
+        email: theUser.email,
+        isRemember: req.body.isRemember,
+        refreshToken: theUser.refreshToken,
+        authToken: theUser.authToken
       };
-      if (req.body.isRemember) {
-        payload = {
-          ...payload,
-          refreshToken: theUser.refreshToken,
-          authToken: theUser.authToken
-        };
-      }
+
       return theUser && res.send(payload);
     })
     .catch((err: any) => {

@@ -92,7 +92,7 @@ const Form = (props: AddEditBookModalParams) => {
         });
       }}
       render={({ errors, touched, ...props }) => (
-        <FormikForm autoComplete="off">
+        <FormikForm autoComplete="new-password">
           <div
             className={`justify-center items-start px-8 py-7 mt-6 rounded-lg border-2 border-solid ${
               errors.title && touched.title ? 'border-red-500' : 'border-black border-opacity-10'
@@ -108,7 +108,7 @@ const Form = (props: AddEditBookModalParams) => {
               placeholder="Title"
               aria-label="Title"
               className="w-full bg-transparent focus:outline-none "
-              autoComplete="off"
+              autoComplete="new-password"
             />
           </div>
           {errors.title && touched.title ? (
@@ -125,7 +125,7 @@ const Form = (props: AddEditBookModalParams) => {
               placeholder="Publication Year"
               aria-label="Publication Year"
               className="w-full bg-transparent focus:outline-none "
-              autoComplete="off"
+              autoComplete="new-password"
             />
           </div>
           <div className="justify-center items-start px-8 py-7 mt-4 whitespace-nowrap rounded-lg border-2 border-solid border-black border-opacity-10 max-md:px-5 max-md:max-w-full">
@@ -138,7 +138,7 @@ const Form = (props: AddEditBookModalParams) => {
               aria-label="Author"
               placeholder="Author"
               className="w-full bg-transparent focus:outline-none "
-              autoComplete="off"
+              autoComplete="new-password"
               style={{ backgroundColor: 'transparent' }}
               render={(fieldProps: any) => (
                 <Select

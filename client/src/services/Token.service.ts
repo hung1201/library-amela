@@ -7,9 +7,17 @@ import NavService from '../services/Nav.service';
 import RoutesConfig from '../config/routesConfig';
 
 class TokenService {
-  public saveToken(token: string) {
+  public saveToken(token: string, isRemember?: boolean) {
     const cookies = new Cookies();
-    cookies.set('token', token, { path: '/' });
+    if (isRemember) {
+      cookies.set('token', token, {
+        path: '/'
+      });
+    } else {
+      // set to session storage insted of cookies
+      sessionStorage.setItem('token', token);
+    }
+
     return Promise.resolve();
   }
   public getToken() {
@@ -30,7 +38,8 @@ class TokenService {
     const ssr = ctx?.req ? true : false;
     const cookies = new Cookies(ssr ? ctx.req.headers.cookie : null);
     const token = cookies.get('token');
-    const response = await this.checkAuthToken(token, ssr);
+    const tokenSession = sessionStorage.getItem('token');
+    const response = await this.checkAuthToken(tokenSession ?? token, ssr);
 
     if (!response.success) {
       const navService = new NavService();

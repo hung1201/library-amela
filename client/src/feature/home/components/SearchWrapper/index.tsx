@@ -58,7 +58,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ placeholder }) => {
         {placeholder}
       </label>
       <input
-        autoComplete="off"
+        autoComplete="new-password"
         type="search"
         id="search"
         className="w-full bg-transparent outline-none"

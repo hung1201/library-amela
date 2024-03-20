@@ -77,7 +77,7 @@ const Form = (props: AddEditAuthorModalParams) => {
         add({ ...values });
       }}
       render={({ errors, touched, ...props }) => (
-        <FormikForm autoComplete="off">
+        <FormikForm autoComplete="new-password">
           <div
             className={`justify-center items-start px-8 py-7 mt-6 rounded-lg border-2 border-solid ${
               errors.name && touched.name ? 'border-red-500' : 'border-black border-opacity-10'
@@ -93,7 +93,7 @@ const Form = (props: AddEditAuthorModalParams) => {
               placeholder="Name"
               aria-label="Name"
               className="w-full bg-transparent focus:outline-none "
-              autoComplete="off"
+              autoComplete="new-password"
             />
           </div>
           {errors.name && touched.name ? <div className="text-red-500">{errors.name}</div> : null}
@@ -107,7 +107,7 @@ const Form = (props: AddEditAuthorModalParams) => {
               aria-label="Book"
               placeholder="Book"
               className="w-full bg-transparent focus:outline-none "
-              autoComplete="off"
+              autoComplete="new-password"
               style={{ backgroundColor: 'transparent' }}
               render={(fieldProps: any) => (
                 <Select

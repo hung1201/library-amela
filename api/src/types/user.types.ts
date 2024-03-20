@@ -23,6 +23,7 @@ export interface ILoginInput extends express.Request {
 }
 export interface ILoginOutput {
   success: boolean;
+  isRemember?: boolean;
   authToken?: string;
   refreshToken?: string;
   fullName: string;

@@ -19,4 +19,5 @@ export interface ILoginOutput {
   refreshToken?: string;
   fullName: string;
   email: string;
+  isRemember?: boolean;
 }

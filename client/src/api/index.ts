@@ -1,9 +1,12 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import * as BookService from '../services/books';
 import * as AuthorService from '../services/authors';
+import * as AuthService from '../services/auth';
 import { IFetchBookListInput } from '../types/books.types';
 import { useQueryParams } from '../feature/books/common';
 import { IFetchAuthorListInput } from '../types/authors.types';
+import { ILoginOutput } from '../types/auth.types';
+import { notistack } from '../utils/notistack';
 
 export const useBookList = (options: {
   onSuccess?: () => void;
@@ -53,4 +56,34 @@ export const useAuthorList = (options: {
       enabled: options.enabled
     }
   );
+};
+
+export const useRegisterUser = (options: { onSuccess?: (data) => void; enabled?: boolean }) => {
+  return useMutation(AuthService.registerUser, {
+    onSuccess: options.onSuccess,
+    onError: () => {}
+  });
+};
+export const useLoginUser = (options: {
+  onSuccess?: (data: ILoginOutput) => void;
+  enabled?: boolean;
+}) => {
+  return useMutation(AuthService.loginUser, {
+    onSuccess: options.onSuccess,
+    onError: () => {}
+  });
+};
+
+export const useForgotPassword = (options: { onSuccess?: (data) => void; enabled?: boolean }) => {
+  return useMutation(AuthService.forgotPassword, {
+    onSuccess: options.onSuccess,
+    onError: () => {}
+  });
+};
+
+export const useResetPassword = (options: { onSuccess?: (data) => void; enabled?: boolean }) => {
+  return useMutation(AuthService.resetPassword, {
+    onSuccess: options.onSuccess,
+    onError: () => {}
+  });
 };

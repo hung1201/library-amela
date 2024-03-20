@@ -66,7 +66,8 @@ const Header: React.FC = () => {
         PaperProps={{
           style: {
             background: theme.palette.primary.main,
-            width: '300px'
+            width: '300px',
+            padding: '20px'
           }
         }}
         anchor="right"

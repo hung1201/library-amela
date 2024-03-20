@@ -4,6 +4,7 @@ import TokenService from '../services/Token.service';
 import NavService from '../services/Nav.service';
 import Login from '../pages/login';
 import RoutesConfig from '../config/routesConfig';
+const ISSERVER = typeof window === 'undefined';
 
 const withPageAuth = <T extends {}>(
   WrappedComponent: React.ComponentType<T>,
@@ -16,7 +17,10 @@ const withPageAuth = <T extends {}>(
     const tokenService = new TokenService();
     const [state] = useAuth();
 
-    const token = useMemo(() => tokenService.getToken(), []);
+    const token = useMemo(() => {
+      const tken = (!ISSERVER && sessionStorage.getItem('token')) ?? tokenService.getToken();
+      return tken;
+    }, []);
     const isLoggedIn = Boolean(state.email && token);
     const navService = new NavService();
     const accessPermission = useMemo(() => {

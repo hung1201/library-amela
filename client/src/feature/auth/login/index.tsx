@@ -1,21 +1,33 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
 
-import FetchService from '../../../services/Fetch.service';
-
-import { useTheme } from '@material-ui/core';
+import { CircularProgress, useTheme } from '@material-ui/core';
+import { useLoginUser } from '../../../api';
 import AuthContainer from '../../../components/AuthContainer';
 import RoutesConfig from '../../../config/routesConfig';
 import { ActionType, useAuth } from '../../../services/Auth.context';
 import NavService from '../../../services/Nav.service';
 import TokenService from '../../../services/Token.service';
-import { ILoginIn, ILoginOutput } from '../../../types/auth.types';
-import { notistack } from '../../../utils/notistack';
+import { ILoginIn } from '../../../types/auth.types';
 type Props = {};
 
 const Login = (props: Props) => {
   const theme = useTheme();
   const [auth, authDispatch] = useAuth();
   const navService = new NavService();
+  const tokenService = new TokenService();
+  const { mutate, isLoading } = useLoginUser({
+    onSuccess(data) {
+      tokenService.saveToken(data.authToken, data.isRemember);
+      authDispatch({
+        type: ActionType.SetDetails,
+        payload: {
+          email: data.email,
+          name: `${data.fullName ?? ''}`
+        }
+      });
+      navService.redirectUser(RoutesConfig.HomePage.path());
+    }
+  });
   return (
     <AuthContainer
       backgroundImageUrl="https://s3-alpha-sig.figma.com/img/0555/8084/d65c04a52ef78dca66bd0c332ffaaa42?Expires=1711929600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=UGIeru0UU9H-LErBzhLXtc2ZEspM7Qmb-SEWsUhoosJXMnwGGFxVJRAh5XHob5qlK8RaCfPQTTsDYNyi0OHhgOdMmG6vVYjR2ac5AMeZVjHufQRhOhBuXjXetvETYj2IyMf35Ark6vvXfsjCXifSy4TP0aAOgoCi5u8-RSgsAcb0LoRQRAIUwBO88vV4YCisM6-GMlpuB2k9I5KsWhJM9Zjg4JPHLqAbmuNdG7PRhEfU32hvW7cc48NQyFYNqfryKAeX6Qpb94z~c74ggV~SmcdDiLl-7Gi-hn4zLdnRDrMc4JYg9I2NxUpOokRHsRiCWk-1CFGfwXPhv3HMFT0Yvg__"
@@ -53,38 +65,14 @@ const Login = (props: Props) => {
                 isRemember: false
               }}
               onSubmit={(values: ILoginIn, { setSubmitting }: FormikProps<ILoginIn>) => {
-                FetchService.isofetch(
-                  '/auth/login',
-                  {
-                    email: values.email,
-                    password: values.password,
-                    isRemember: true
-                  },
-                  'POST'
-                )
-                  .then((res: ILoginOutput) => {
-                    setSubmitting(false);
-                    if (res.success) {
-                      const tokenService = new TokenService();
-                      tokenService.saveToken(res.authToken);
-                      authDispatch({
-                        type: ActionType.SetDetails,
-                        payload: {
-                          email: res.email,
-                          name: `${res.fullName ?? ''}`
-                        }
-                      });
-                      navService.redirectUser(RoutesConfig.HomePage.path());
-                      return;
-                    }
-                    throw new Error('Login failed! Please check your email and password again');
-                  })
-                  .catch((err: Error): void => {
-                    notistack.error(err.message);
-                  });
+                mutate({
+                  email: values.email,
+                  password: values.password,
+                  isRemember: values.isRemember
+                });
               }}
               render={({ values, errors, touched }) => (
-                <Form autoComplete="off">
+                <Form>
                   <div
                     className={`justify-center items-start px-8 py-7 mt-4 whitespace-nowrap rounded-lg border-2 border-solid ${
                       errors.email && touched.email
@@ -104,7 +92,8 @@ const Login = (props: Props) => {
                       className={`w-full bg-transparent focus:outline-none text-white ${
                         errors.email && touched.email ? 'text-red-500' : ''
                       }`}
-                      autoComplete="off"
+                      autoComplete="new-password"
+                      style={{ background: 'transparent !important' }}
                     />
                   </div>
                   {errors.email && touched.email ? (
@@ -122,6 +111,7 @@ const Login = (props: Props) => {
                     </label>
                     <Field
                       type="password"
+                      style={{ background: 'transparent !important' }}
                       id="password"
                       name="password"
                       placeholder="Pas*****"
@@ -129,7 +119,7 @@ const Login = (props: Props) => {
                       className={`w-full bg-transparent focus:outline-none text-white ${
                         errors.password && touched.password ? 'text-red-500' : ''
                       }`}
-                      autoComplete="off"
+                      autoComplete="new-password"
                     />
                   </div>
                   {errors.password && touched.password ? (
@@ -149,10 +139,12 @@ const Login = (props: Props) => {
                     </label>
                   </div>
                   <button
+                    disabled={isLoading}
                     type="submit"
-                    className="justify-center items-center px-16 py-7 mt-10 text-lg font-bold tracking-normal text-gray-800 bg-amber-200 rounded-md max-md:px-5 w-full"
+                    className="flex gap-2 justify-center items-center px-16 py-7 mt-10 text-lg font-bold tracking-normal text-gray-800 bg-amber-200 rounded-md max-md:px-5 w-full"
                     style={{ background: theme.palette.secondary.main, letterSpacing: 4 }}
                   >
+                    {isLoading ? <CircularProgress size={20} /> : <></>}
                     MUSK
                   </button>
                 </Form>

@@ -2,17 +2,24 @@ import { Field, Form, Formik, FormikProps } from 'formik';
 
 import FetchService from '../../../services/Fetch.service';
 
-import { useTheme } from '@material-ui/core';
+import { CircularProgress, useTheme } from '@material-ui/core';
 import AuthContainer from '../../../components/AuthContainer';
 import RoutesConfig from '../../../config/routesConfig';
 import NavService from '../../../services/Nav.service';
 import { IRegisterIn } from '../../../types/auth.types';
 import { notistack } from '../../../utils/notistack';
+import { useRegisterUser } from '../../../api';
 type Props = {};
 
 const Register = (props: Props) => {
   const navService = new NavService();
   const theme = useTheme();
+  const { mutate, isLoading } = useRegisterUser({
+    onSuccess() {
+      notistack.success('Register success!');
+      navService.redirectUser(RoutesConfig.LoginPage.path());
+    }
+  });
   return (
     <AuthContainer
       backgroundImageUrl="https://s3-alpha-sig.figma.com/img/5b6c/1d79/86620df9fa97823295e87b6faa6c7fc7?Expires=1711929600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=DUCB53XA4ybQgJP-TX19kD3FHbHEATcUG6OBj2VdOYT8BYrMFXN2Qp1vjLGeSHCZVrJlrjO2-zs9CWMjwwkYdWAJ30WbLgnZpOAcWGW87Av7424pXLj5GrahVLy5oA7YkF3wji97X-yY-yZs1U0gvp5Xwa1CWZ-Qe6HN8vyCoTHDqDqn2YMMPUXciz-SOu1jyqLdjRcE~eRRJd8xSzEBRDS-d23jIX4e7UEvLn0Yqle0YVqYYz~LfyHpBw2jkY4rSfOb-XuXLYzycrLDsGo1A5kKYlPwHVerQaPXsDML6HEkgSUBmYwi6m5Tb1jOhvGvFaqULWd2Zs7yCA7~Cy9j5A__"
@@ -55,30 +62,14 @@ const Register = (props: Props) => {
                 password: ''
               }}
               onSubmit={(values: IRegisterIn, { setSubmitting }: FormikProps<IRegisterIn>) => {
-                FetchService.isofetch(
-                  '/auth/register',
-                  {
-                    fullName: values.fullName,
-                    email: values.email,
-                    password: values.password
-                  },
-                  'POST'
-                )
-                  .then((res) => {
-                    setSubmitting(false);
-                    if (res.success) {
-                      notistack.success(res.message);
-                      navService.redirectUser(RoutesConfig.LoginPage.path());
-                      return;
-                    }
-                    throw new Error('Register failed');
-                  })
-                  .catch((err: Error) => {
-                    notistack.error(err.message);
-                  });
+                mutate({
+                  fullName: values.fullName,
+                  email: values.email,
+                  password: values.password
+                });
               }}
               render={({ values, errors, touched }) => (
-                <Form autoComplete="off">
+                <Form autoComplete="new-password">
                   <div
                     className={`justify-center items-start px-8 py-7 mt-6 rounded-lg border-2 border-solid ${
                       errors.fullName && touched.fullName
@@ -96,7 +87,7 @@ const Register = (props: Props) => {
                       placeholder="Your Name"
                       aria-label="Your Name"
                       className="w-full bg-transparent focus:outline-none text-white"
-                      autoComplete="off"
+                      autoComplete="new-password"
                     />
                   </div>
                   {errors.fullName && touched.fullName ? (
@@ -119,7 +110,7 @@ const Register = (props: Props) => {
                       placeholder="Email"
                       aria-label="Email"
                       className="w-full bg-transparent focus:outline-none text-white"
-                      autoComplete="off"
+                      autoComplete="new-password"
                     />
                   </div>
                   {errors.email && touched.email ? (
@@ -142,7 +133,7 @@ const Register = (props: Props) => {
                       placeholder="Pas*****"
                       aria-label="Password"
                       className="w-full bg-transparent focus:outline-none text-white"
-                      autoComplete="off"
+                      autoComplete="new-password"
                       style={{ backgroundColor: 'transparent' }}
                     />
                   </div>
@@ -150,10 +141,12 @@ const Register = (props: Props) => {
                     <div className="text-red-500">{errors.password}</div>
                   ) : null}
                   <button
+                    disabled={isLoading}
                     type="submit"
-                    className="justify-center items-center px-16 py-7 mt-10 text-lg font-bold tracking-normal text-gray-800 bg-amber-200 rounded-md max-md:px-5 w-full"
+                    className="flex gap-2 justify-center items-center px-16 py-7 mt-10 text-lg font-bold tracking-normal text-gray-800 bg-amber-200 rounded-md max-md:px-5 w-full"
                     style={{ background: theme.palette.secondary.main, letterSpacing: 4 }}
                   >
+                    {isLoading ? <CircularProgress size={20} /> : <></>}
                     DAFTAR
                   </button>
                 </Form>
