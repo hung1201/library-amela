@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { app } = require('../../app');
 import db from '../../db/models';
 
@@ -31,7 +32,7 @@ describe('test the JWT authorization middleware', () => {
     const response = await supertest(app)
       .post('/v1/auth/protected')
       .expect(200)
-      .set('authorization', `bearer ${authToken}`);
+      .set('Authorization', `Bearer ${authToken}`);
 
     expect(response.body).toMatchObject({
       success: true

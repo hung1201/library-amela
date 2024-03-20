@@ -1,5 +1,5 @@
+require('dotenv').config();
 import db from '../../db/models';
-
 import * as faker from 'faker';
 
 import { Authentication } from '../Authentication';
@@ -19,7 +19,6 @@ describe('test the Authentication service', () => {
     const fullName = `John Smith`;
 
     const newUser = await authentication.createUser({ fullName, email, password });
-
     expect(newUser).toMatchObject({
       id: expect.any(Number)
     });

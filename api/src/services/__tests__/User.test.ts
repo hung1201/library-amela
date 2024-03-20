@@ -1,3 +1,4 @@
+require('dotenv').config();
 import db from '../../db/models';
 
 import * as faker from 'faker';

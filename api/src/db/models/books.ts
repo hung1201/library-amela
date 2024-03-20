@@ -5,7 +5,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
       title: DataTypes.STRING,
       pubYear: DataTypes.DATE,
       authorId: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.INTEGER,
         reference: {
           model: 'authors',
           key: 'id'

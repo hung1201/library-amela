@@ -1,4 +1,4 @@
-import { IFetchBookListInput, IFetchBookListOutput, IInsertBookInput } from 'types/books';
+import { IFetchBookListInput, IFetchBookListOutput, IInsertBookInput } from '../types/books';
 import db, { sequelize } from '../db/models';
 
 class Books {

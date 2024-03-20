@@ -1,16 +1,20 @@
-import { IFetchAuthorListInput, IFetchAuthorListOutput, IInsertAuthorInput } from 'types/authors';
+import {
+  IFetchAuthorListInput,
+  IFetchAuthorListOutput,
+  IInsertAuthorInput
+} from '../types/authors';
 import db, { sequelize } from '../db/models';
 
 class Authors {
   constructor() {}
 
-  createAuthor = async (payload: IInsertAuthorInput) =>{
-   const data = await db.authors.create({
+  createAuthor = async (payload: IInsertAuthorInput) => {
+    const data = await db.authors.create({
       name: payload.name,
       bookIds: payload.bookIds ?? [],
       createdAt: new Date().toISOString()
-   });
-    if (payload.bookIds.length > 0) { 
+    });
+    if (payload.bookIds.length > 0) {
       await sequelize.query(
         `UPDATE books
         SET "authorId" = ${data.id}
@@ -18,11 +22,11 @@ class Authors {
         `
       );
     }
-    return data
-  }
+    return data;
+  };
 
   getAuthor = async (payload: IFetchAuthorListInput): Promise<IFetchAuthorListOutput> => {
-    const [rows,] = await sequelize.query(
+    const [rows] = await sequelize.query(
       ` SELECT authors.*, json_agg(json_build_object('id', books.id, 'title', books.title)) AS books
         FROM authors 
         LEFT JOIN books ON books.id = ANY(authors."bookIds")
@@ -32,12 +36,11 @@ class Authors {
         OFFSET ${Number(payload.page) * Number(payload.pageSize)};
       `
     );
-    const [total,] = await sequelize.query(
+    const [total] = await sequelize.query(
       ` SELECT COUNT(*) AS count
         FROM authors 
       `
     );
-   
 
     return {
       authors: rows,
@@ -55,7 +58,7 @@ class Authors {
     });
   }
 
-  updateAuthor = async (id: string, updatedData: Partial<IInsertAuthorInput>)=>  {
+  updateAuthor = async (id: string, updatedData: Partial<IInsertAuthorInput>) => {
     const data = await db.authors.update(updatedData, {
       where: { id }
     });
@@ -66,19 +69,17 @@ class Authors {
         WHERE "authorId" = ${id};
         `
       );
-     
     } else {
-       await sequelize.query(
+      await sequelize.query(
         `UPDATE books
         SET "authorId" = ${id}
         WHERE id = ANY(ARRAY[${updatedData.bookIds}]);
         `
       );
-   }
-     
-    
-    return data
-  }
+    }
+
+    return data;
+  };
 
   deleteAuthor(id: string) {
     return db.authors.destroy({
