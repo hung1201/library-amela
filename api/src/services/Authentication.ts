@@ -118,10 +118,8 @@ class Authentication {
     if (!userExists) {
       throw new Error('No matching user.');
     }
-    userExists.password = this.hashPassword(body.password);
-    const newUser = await user.saveUser();
+    await user.updateUserPassword(this.hashPassword(body.password));
 
-    await this.logUserActivity(newUser.id, 'reset-password');
     return { success: true, message: 'Password reset successfully' };
   };
 }

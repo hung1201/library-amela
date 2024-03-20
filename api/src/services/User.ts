@@ -24,7 +24,9 @@ class User {
       where: { email: this.email }
     });
   }
-
+  updateUserPassword(passwordHash: string) {
+    return db.users.update({ password: passwordHash }, { where: { email: this.email } });
+  }
   saveUser() {
     return db.users.create({
       fullName: this.fullName,
