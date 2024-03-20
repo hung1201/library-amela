@@ -4,11 +4,12 @@ import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
 import { useTheme } from '@material-ui/core';
+import moment from 'moment';
 interface CourseCardProps {
   imageUrl: string;
   title: string;
-  description: string;
-  duration: string;
+  author: string;
+  pubYear: string;
   videoCount: number;
   studentCount: number;
 }
@@ -16,8 +17,8 @@ interface CourseCardProps {
 const CourseCard: React.FC<CourseCardProps> = ({
   imageUrl,
   title,
-  description,
-  duration,
+  author,
+  pubYear,
   videoCount,
   studentCount
 }) => {
@@ -74,12 +75,12 @@ const CourseCard: React.FC<CourseCardProps> = ({
             height: '48px'
           }}
         >
-          {description}
+          {author}
         </p>
         <div className="flex gap-5 justify-between text-justify leading-[150%]">
           <div className="flex gap-2.5 text-gray-500">
             <AccessTimeIcon />
-            <span>{duration} Jam</span>
+            <span>{moment(pubYear).format('DD-MM-YYYY')}</span>
           </div>
           <div className="flex gap-2.5 text-gray-500">
             <PlayCircleOutlineIcon />
