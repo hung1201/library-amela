@@ -26,6 +26,7 @@ class TokenService {
   }
   public deleteToken() {
     const cookies = new Cookies();
+    sessionStorage.removeItem('token');
     cookies.remove('token', { path: '/' });
     return;
   }
