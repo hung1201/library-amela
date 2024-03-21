@@ -18,7 +18,7 @@ const HomePage = (props: Props) => {
     filtering: {
       page: `${query.page}`,
       pageSize: `${query.pageSize}`,
-      sortField: 'pubYear',
+      sortField: query.sortField,
       order: query.orderType as 'asc' | 'desc'
     }
   });
@@ -37,8 +37,8 @@ const HomePage = (props: Props) => {
               <CourseCard
                 imageUrl="https://static.remove.bg/sample-gallery/graphics/bird-thumbnail.jpg"
                 title={item.title}
-                author={item.author}
-                pubYear={item.pubYear ? item.pubYear : 'N/A'}
+                description={item.author}
+                duration="1"
                 videoCount={1}
                 studentCount={1}
               />

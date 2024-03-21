@@ -19,7 +19,7 @@ type IQueryParams = {
 export const DefaultPaging: IDefaultPaging = {
   page: 0,
   pageSize: 9,
-  sortField: 'pubYear',
+  sortField: 'id',
   orderType: 'desc'
 };
 
