@@ -103,7 +103,7 @@ class Authentication {
       'Password Reset',
       `Please click the link to reset your password: http://localhost:3000/reset-password?email=${email}`
     );
-    console.log('>>', data);
+
     if (data?.messageId) {
       return { success: true, message: 'Please check your email for further instructions.' };
     }
